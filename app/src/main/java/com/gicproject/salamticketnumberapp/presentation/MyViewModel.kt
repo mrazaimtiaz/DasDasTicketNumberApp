@@ -68,7 +68,7 @@ class MyViewModel @Inject constructor(
 
 
     init {
-        var lampUtil :LampsUtil  = LampsUtil()
+        var lampUtil: LampsUtil = LampsUtil()
         Log.d("TAG", "init called: ")
         initPreference()
         onEvent(MyEvent.GetTicket)
@@ -83,10 +83,11 @@ class MyViewModel @Inject constructor(
             initBlinkCountPreference()
         }
     }
-var job: Job? = null
+
+    var job: Job? = null
     private fun blinkEffect() {
         job?.cancel()
-        job =  viewModelScope.launch {
+        job = viewModelScope.launch {
             val tempTicket = ticketNumber.value.number
 
             val blinkCounter = _selectedBlinkCount.value
@@ -95,13 +96,23 @@ var job: Job? = null
             while (i < blinkCounter) {
                 i += 1;
                 delay(500L)
-               // offLamps()
-                _stateTicket.value = _stateTicket.value.copy(ticketNumber = TicketNumber(ticketNumber.value.status, ""))
+                // offLamps()
+                _stateTicket.value = _stateTicket.value.copy(
+                    ticketNumber = TicketNumber(
+                        ticketNumber.value.status,
+                        ""
+                    )
+                )
                 Log.d("TAG", "blinkEffect: value of ticket number1 ${tempTicket}")
                 delay(500L)
-              //  greenLamps()
+                //  greenLamps()
                 _stateTicket.value =
-                    _stateTicket.value.copy(ticketNumber = TicketNumber(ticketNumber.value.status, tempTicket))
+                    _stateTicket.value.copy(
+                        ticketNumber = TicketNumber(
+                            ticketNumber.value.status,
+                            tempTicket
+                        )
+                    )
                 Log.d("TAG", "blinkEffect: value of ticket number ${tempTicket}")
 
             }
@@ -168,10 +179,10 @@ var job: Job? = null
 
     fun saveBlinkCount(count: Int) {
         viewModelScope.launch {
-            try{
+            try {
                 repository.putInt(Constants.KEY_BLINK_COUNT, count)
                 initBlinkCountPreference()
-            }catch (e: java.lang.Exception){
+            } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }
 
@@ -201,22 +212,31 @@ var job: Job? = null
             }
             is MyEvent.GetTicket -> {
                 Log.d("TAG", "onEvent: called getticket")
-                if(_selectedCounterId.value.isNotEmpty()){
+                if (_selectedCounterId.value.isNotEmpty()) {
                     surveyUseCases.getCounterStatus(_selectedCounterId.value).onEach { result ->
                         when (result) {
                             is Resource.Success -> {
                                 result.data?.let {
-                                    _stateTicket.value =  _stateTicket.value.copy(ticketNumber = it, error = "")
-                                    if(it.status == 1){
-                                        blueLamps()
-                                    }else{
-                                        greenLamps()
-                                        if(
-                                            _ticketNumber.value.number != it.number){
+                                    _stateTicket.value =
+                                        _stateTicket.value.copy(ticketNumber = it, error = "")
+                                    if (it.status == 1) {
+                                        try {
+                                            blueLamps()
+                                        } catch (_: UnsatisfiedLinkError) {
+
+                                        }
+                                    } else {
+                                        try {
+                                            greenLamps()
+                                        } catch (_: UnsatisfiedLinkError) {
+
+                                        }
+                                        if (
+                                            _ticketNumber.value.number != it.number) {
                                             _ticketNumber.value = it
                                             blinkEffect()
 
-                                        }else{
+                                        } else {
                                             _ticketNumber.value = it
                                         }
                                     }
@@ -226,7 +246,7 @@ var job: Job? = null
                                 onEvent(MyEvent.GetTicket)
                             }
                             is Resource.Error -> {
-                                _stateTicket.value =  _stateTicket.value.copy(
+                                _stateTicket.value = _stateTicket.value.copy(
                                     error = result.message ?: "An unexpected error occurred"
                                 )
                                 delay(500)
@@ -236,7 +256,7 @@ var job: Job? = null
                             }
                         }
                     }.launchIn(viewModelScope)
-                }else{
+                } else {
                     viewModelScope.launch {
                         delay(1000)
                         onEvent(MyEvent.GetTicket)
@@ -245,25 +265,25 @@ var job: Job? = null
                 }
             }
             is MyEvent.GetBlinkCount -> {
-                    surveyUseCases.getBlinkCount().onEach { result ->
-                        when (result) {
-                            is Resource.Success -> {
-                                result.data?.let {
-                                    it.blinkingCount?.let { it1 -> saveBlinkCount(it1) }
-                                }
-                                delay(5000)
-                                onEvent(MyEvent.GetBlinkCount)
+                surveyUseCases.getBlinkCount().onEach { result ->
+                    when (result) {
+                        is Resource.Success -> {
+                            result.data?.let {
+                                it.blinkingCount?.let { it1 -> saveBlinkCount(it1) }
                             }
-                            is Resource.Error -> {
-                                _stateTicket.value =  _stateTicket.value.copy(
-                                    error = result.message ?: "An unexpected error occurred"
-                                )
-                                delay(5000)
-                                onEvent(MyEvent.GetBlinkCount)
-                            }
-                            else -> {}
+                            delay(5000)
+                            onEvent(MyEvent.GetBlinkCount)
                         }
-                    }.launchIn(viewModelScope)
+                        is Resource.Error -> {
+                            _stateTicket.value = _stateTicket.value.copy(
+                                error = result.message ?: "An unexpected error occurred"
+                            )
+                            delay(5000)
+                            onEvent(MyEvent.GetBlinkCount)
+                        }
+                        else -> {}
+                    }
+                }.launchIn(viewModelScope)
 
             }
             else -> {
@@ -304,7 +324,10 @@ var job: Job? = null
                     e.printStackTrace()
                 } catch (e: IOException) {
                     e.printStackTrace()
+                } catch (e: NoClassDefFoundError) {
+                    e.printStackTrace()
                 }
+
             }
         }
         runnableLoop.run()
@@ -324,6 +347,8 @@ var job: Job? = null
                     e.printStackTrace()
                 } catch (e: IOException) {
                     e.printStackTrace()
+                } catch (e: NoClassDefFoundError) {
+                    e.printStackTrace()
                 }
             }
         }
@@ -337,7 +362,7 @@ var job: Job? = null
             @SuppressLint("SuspiciousIndentation")
             override fun run() {
                 try {
-                    var  ttyS1 = SerialPort(File("/dev/ttyS1"), 115200, 0)
+                    var ttyS1 = SerialPort(File("/dev/ttyS1"), 115200, 0)
                     UartSend.UartAllR(ttyS1, "ttyS1").run()
 
                 } catch (e: SecurityException) {
@@ -358,7 +383,7 @@ var job: Job? = null
             override fun run() {
                 try {
                     Log.d("TAG", "run: called run")
-                    var  ttyS1 = SerialPort(File("/dev/ttyS1"), 115200, 0)
+                    var ttyS1 = SerialPort(File("/dev/ttyS1"), 115200, 0)
                     UartSend.UartAllG(ttyS1, "ttyS1").run()
 
                 } catch (e: SecurityException) {
@@ -369,7 +394,6 @@ var job: Job? = null
             }
         }
         runnableLoop.run()
-
 
 
     }

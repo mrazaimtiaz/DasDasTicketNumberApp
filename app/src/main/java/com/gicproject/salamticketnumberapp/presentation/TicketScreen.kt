@@ -123,7 +123,7 @@ fun QuestionScreen(
                            )
                        }else if(state.ticketNumber.status == 1){
                            Image(
-                               painterResource( R.drawable.alsalamlogo),
+                               painterResource( R.drawable.daslogo),
                                contentDescription = "ghp logo",
                                contentScale = ContentScale.Fit,
                                modifier = Modifier.size(688.dp, 688.dp).padding(top =70.dp)

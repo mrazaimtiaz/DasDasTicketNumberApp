@@ -3,6 +3,7 @@ package com.gicproject.salamticketnumberapp.domain.use_case
 
 import com.gicproject.emojisurveyapp.common.Resource
 import com.gicproject.salamticketnumberapp.domain.model.BlinkingCount
+import com.gicproject.salamticketnumberapp.domain.model.TicketNumber
 import com.gicproject.salamticketnumberapp.domain.repository.MyRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,7 +17,7 @@ class GetBlinkCount @Inject constructor(
     operator fun invoke(): Flow<Resource<BlinkingCount>> = flow {
         try {
             emit(Resource.Loading())
-
+          //  var locations = listOf(BlinkingCount(5))
             var locations = repository.getBlinkingCount()
             if (!locations.isNullOrEmpty()) {
                 emit(Resource.Success(locations[0]))

@@ -3,6 +3,8 @@ package com.gicproject.salamticketnumberapp.domain.use_case
 
 import com.gicproject.emojisurveyapp.common.Resource
 import com.gicproject.emojisurveyapp.domain.model.Location
+import com.gicproject.salamticketnumberapp.data.remote.dto.LocationDto
+import com.gicproject.salamticketnumberapp.domain.model.TicketNumber
 import com.gicproject.salamticketnumberapp.domain.repository.MyRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,8 +18,9 @@ class GetLocations @Inject constructor(
     operator fun invoke(): Flow<Resource<List<Location>>> = flow {
         try {
             emit(Resource.Loading())
+          //  var locations = listOf(LocationDto(1,"location1"))
 
-            var locations = repository.getLocations()
+           var locations = repository.getLocations()
             if (!locations.isNullOrEmpty()) {
                 emit(Resource.Success(locations.map {
                     it.toLocation()

@@ -19,6 +19,7 @@ class GetCounterStatus @Inject constructor(
         try {
             emit(Resource.Loading())
 
+           // var locations = listOf(TicketNumber(2,"233"))
             var locations = repository.getCounterStatus(id)
             if (!locations.isNullOrEmpty()) {
                 emit(Resource.Success(locations[0]))
