@@ -2,7 +2,8 @@ package com.gicproject.salamticketnumberapp.common
 
 class Constants {
     companion object {
-        const val BASE_URL = "http://gickuwait-dev.com/KHsurvey/"
+        const val BASE_URL = "http://192.168.20.155/recScreenAPI/"  //dar ul shifa
+     //   const val BASE_URL = "http://gickuwait-dev.com/KHsurvey/"
        // const val BASE_URL = "http://192.168.0.117/api/"  //omar laptop
      //   const val BASE_URL = "http://192.0.6.3/api/"
         const val STATE_MSG_EN = "state msg en"

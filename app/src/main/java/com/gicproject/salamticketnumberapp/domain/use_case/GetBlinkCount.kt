@@ -17,7 +17,7 @@ class GetBlinkCount @Inject constructor(
     operator fun invoke(): Flow<Resource<BlinkingCount>> = flow {
         try {
             emit(Resource.Loading())
-          //  var locations = listOf(BlinkingCount(5))
+            //var locations = listOf(BlinkingCount(5))
             var locations = repository.getBlinkingCount()
             if (!locations.isNullOrEmpty()) {
                 emit(Resource.Success(locations[0]))

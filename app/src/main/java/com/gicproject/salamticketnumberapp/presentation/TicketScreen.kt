@@ -36,7 +36,7 @@ fun QuestionScreen(
     val state = viewModel.stateTicket.value
     var isNavigateSetting = true
 
-    val counterId by viewModel.selectedCounterId.collectAsState()
+    val counterId by viewModel.selectedCounterName.collectAsState()
 
     Scaffold { innerPadding ->
         Box(

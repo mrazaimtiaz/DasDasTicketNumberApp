@@ -18,9 +18,9 @@ class GetLocations @Inject constructor(
     operator fun invoke(): Flow<Resource<List<Location>>> = flow {
         try {
             emit(Resource.Loading())
-          //  var locations = listOf(LocationDto(1,"location1"))
+           //var locations = listOf(LocationDto(1,"location1"))
 
-           var locations = repository.getLocations()
+          var locations = repository.getLocations()
             if (!locations.isNullOrEmpty()) {
                 emit(Resource.Success(locations.map {
                     it.toLocation()
